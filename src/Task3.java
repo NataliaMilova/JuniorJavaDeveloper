@@ -9,7 +9,8 @@ public class Task3 {
             Scanner in = new Scanner(System.in);
             System.out.println("Enter n: ");
             double n = in.nextDouble();
-
+            int result = (int)Math.round(n);
+            System.out.println("Result: " + result);
         }
         catch(Exception e){
             System.out.println("Input error ");
