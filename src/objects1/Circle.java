@@ -13,9 +13,8 @@ public class Circle {
         this.r = r;
     }
 
-
     public double sq(){
-        if (r == 0){
+        if (this.r == 0){
             System.out.println("Warning: degenerate circle");
             return 0;
         }
@@ -23,7 +22,7 @@ public class Circle {
     }
 
     public double length(){
-        if (r == 0){
+        if (this.r == 0){
             System.out.println("Warning: degenerate circle");
             return 0;
         }

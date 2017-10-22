@@ -4,8 +4,8 @@ package objects1;
  * Created by evami on 20.10.17.
  */
 public class Point {
-    int x;
-    int y;
+    public int x;
+    public int y;
 
     public Point(int x, int y){
         this.x = x;

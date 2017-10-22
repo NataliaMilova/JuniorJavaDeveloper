@@ -1,19 +1,14 @@
-package objects1;
+package objects2.figure;
+
+import objects1.Point;
 
 /**
- * Created by evami on 20.10.17.
+ * Created by evami on 21.10.17.
  */
-public class Rectangle {
-    Point a;
-    Point b;
-    Point c;
-    Point d;
+public class Rectangle extends Quadrilateral {
 
     public Rectangle(Point a, Point b, Point c, Point d){
-        this.a = a;
-        this.b = b;
-        this.c = c;
-        this.d = d;
+        super(a, b, c, d);
     }
 
     public boolean validate(){
