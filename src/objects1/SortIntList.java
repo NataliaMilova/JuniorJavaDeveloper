@@ -60,7 +60,7 @@ public class SortIntList {
         }
 
         public int remove(int index){
-            ListItem tmp;
+            ListItem tmp, tmp2;
             if (this.length == 0){
                 System.out.println("List is empty");
                 return -2;
@@ -70,29 +70,32 @@ public class SortIntList {
                 return -1;
             }
             if (index == 0){
+                tmp2 = this.head;
                 this.head = this.head.next;
                 this.length--;
                 System.out.println("Success delete num with index " + index);
-                return 0;
+                return tmp2.value;
             }
             if (index == this.length - 1){
                 tmp = this.head;
                 for (int i = 0; i < this.length -1; ++i){
                     tmp = tmp.next;
                 }
+                tmp2 = tmp.next;
                 tmp.next = null;
                 this.length--;
                 System.out.println("Success delete num with index " + index);
-                return 0;
+                return tmp2.value;
             }
             tmp = this.head;
             for (int i = 0; i < index -1; ++i){
                 tmp = tmp.next;
             }
+            tmp2 = tmp.next;
             tmp.next = tmp.next.next;
             this.length--;
             System.out.println("Success delete num with index " + index);
-            return 0;
+            return tmp2.value;
         }
 
         public void printList(){

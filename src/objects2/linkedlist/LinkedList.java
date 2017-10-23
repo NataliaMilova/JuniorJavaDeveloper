@@ -66,40 +66,43 @@ public class LinkedList {
         return tmp.value;
     }
 
-    public int remove(int index){
-        ListItem tmp;
+    public Object remove(int index){
+        ListItem tmp, tmp2;
         if (this.length == 0){
             System.out.println("List is empty");
-            return -2;
+            return null;
         }
         if ((index >= this.length ) || (index < 0)){
             System.out.println("Index error");
-            return -1;
+            return null;
         }
         if (index == 0){
+            tmp = this.head;
             this.head = this.head.next;
             this.length--;
             System.out.println("Success delete num with index " + index);
-            return 0;
+            return tmp;
         }
         if (index == this.length - 1){
             tmp = this.head;
             for (int i = 0; i < this.length -1; ++i){
                 tmp = tmp.next;
             }
+            tmp2 = tmp.next;
             tmp.next = null;
             this.length--;
             System.out.println("Success delete num with index " + index);
-            return 0;
+            return tmp2;
         }
         tmp = this.head;
         for (int i = 0; i < index - 1; ++i){
             tmp = tmp.next;
         }
+        tmp2 = tmp.next;
         tmp.next = tmp.next.next;
         this.length--;
         System.out.println("Success delete num with index " + index);
-        return 0;
+        return tmp2;
     }
 
     public void printList(){
