@@ -15,19 +15,6 @@ public class IntList {
         this.length++;
     }
 
-    public void add(int value){
-        if (this.length == 0)
-            this.head = new ListItem(value);
-        else {
-            ListItem tmp = this.head;
-            for (int i = 0; i < this.length - 1; ++i){
-                tmp = tmp.next;
-            }
-            tmp.next = new ListItem(value);
-        }
-        this.length++;
-        System.out.printf("Success add %d\n ", value);
-    }
 
     public void add(int value, int index){
         if (this.length == 0){
@@ -52,6 +39,10 @@ public class IntList {
                     System.out.printf("Success add %d in index %d\n", value, index);
                 }
             }
+    }
+
+    public void add(int value){
+        this.add(value, this.length);
     }
 
     public int get(int index){
