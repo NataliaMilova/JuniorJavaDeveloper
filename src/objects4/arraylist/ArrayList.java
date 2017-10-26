@@ -1,5 +1,5 @@
-package objects3.arraylist;
-import java.util.Arrays;
+package objects4.arraylist;
+import java.util.Iterator;
 
 /**
  * Created by evami on 24.10.17.
@@ -14,6 +14,31 @@ public class ArrayList implements List, Stack, Queue {
 
     public ArrayList(int size){
         this.objects = new Object[size];
+    }
+
+    private class ArrayIterator implements Iterator{
+        private int ptr;
+
+        public ArrayIterator() {
+            this.ptr = 0;
+        }
+
+        @Override
+        public boolean hasNext(){
+            return (this.ptr < ArrayList.this.size);
+        }
+
+        @Override
+        public Object next(){
+            Object tmp = ArrayList.this.objects[ptr];
+            this.ptr++;
+            return tmp;
+        }
+    }
+
+    @Override
+    public Iterator iterator(){
+        return new ArrayIterator();
     }
 
     @Override

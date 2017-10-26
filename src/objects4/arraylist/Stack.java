@@ -1,4 +1,4 @@
-package objects3.linkedlist;
+package objects4.arraylist;
 
 /**
  * Created by evami on 23.10.17.

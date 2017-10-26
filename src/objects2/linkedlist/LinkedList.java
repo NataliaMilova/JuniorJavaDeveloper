@@ -34,7 +34,6 @@ public class LinkedList {
                 }
                 tmp.next = new ListItem(value, tmp.next);
                 this.length++;
-                System.out.printf("Success add object in index %d\n", index);
             }
         }
     }
@@ -70,8 +69,7 @@ public class LinkedList {
             tmp = this.head;
             this.head = this.head.next;
             this.length--;
-            System.out.println("Success delete num with index " + index);
-            return tmp;
+            return tmp.value;
         }
         if (index == this.length - 1){
             tmp = this.head;
@@ -81,8 +79,7 @@ public class LinkedList {
             tmp2 = tmp.next;
             tmp.next = null;
             this.length--;
-            System.out.println("Success delete num with index " + index);
-            return tmp2;
+            return tmp2.value;
         }
         tmp = this.head;
         for (int i = 0; i < index - 1; ++i){
@@ -91,8 +88,7 @@ public class LinkedList {
         tmp2 = tmp.next;
         tmp.next = tmp.next.next;
         this.length--;
-        System.out.println("Success delete num with index " + index);
-        return tmp2;
+        return tmp2.value;
     }
 
     public void printList(){

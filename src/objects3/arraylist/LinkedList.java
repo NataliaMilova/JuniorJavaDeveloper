@@ -1,6 +1,6 @@
-package objects3.linkedlist;
+package objects3.arraylist;
 import objects2.linkedlist.ListItem;
-
+import objects3.arraylist.*;
 /**
  * Created by evami on 23.10.17.
  */
@@ -37,7 +37,6 @@ public class LinkedList implements List, Stack, Queue{
                 }
                 tmp.next = new ListItem(value, tmp.next);
                 this.size++;
-                System.out.printf("Success\n");
             }
         }
     }
@@ -76,8 +75,7 @@ public class LinkedList implements List, Stack, Queue{
             tmp = this.head;
             this.head = this.head.next;
             this.size--;
-            System.out.println("Success");
-            return tmp;
+            return tmp.value;
         }
         if (index == this.size - 1){
             tmp = this.head;
@@ -87,8 +85,7 @@ public class LinkedList implements List, Stack, Queue{
             tmp2 = tmp.next;
             tmp.next = null;
             this.size--;
-            System.out.println("Success delete num with index " + index);
-            return tmp2;
+            return tmp2.value;
         }
         tmp = this.head;
         for (int i = 0; i < index - 1; ++i){
@@ -97,9 +94,9 @@ public class LinkedList implements List, Stack, Queue{
         tmp2 = tmp.next;
         tmp.next = tmp.next.next;
         this.size--;
-        System.out.println("Success delete num with index " + index);
-        return tmp2;
+        return tmp2.value;
     }
+
     @Override
     public int sizeOf() {
         return this.size;
