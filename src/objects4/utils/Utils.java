@@ -3,7 +3,11 @@ import objects4.arraylist.*;
 /**
  * Created by evami on 26.10.17.
  */
-public class Utils {
+public final class Utils {
+
+    private Utils(){
+    }
+
     public interface Predicate {
         boolean apply(Object object);
     }

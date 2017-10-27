@@ -11,8 +11,8 @@ public class Library {
 
     public Library(int capacity){
         this.capacity = capacity;
-        this.quantityOfBooks = new int[booksNum];
-        this.booksInLibrary = new Book[booksNum];
+        this.quantityOfBooks = new int[capacity];
+        this.booksInLibrary = new Book[capacity];
     }
 
     public void put (Book book, int quantity){

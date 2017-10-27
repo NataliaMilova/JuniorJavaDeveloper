@@ -31,10 +31,14 @@ public class LazyAccum {
     }
 
     public int calculate(){
+        Stack stack1 =  new LinkedList();
         Node tmp;
         while (this.stack.sizeOf() != 0) {
-            tmp = (Node)this.stack.pop();
-            this.value = tmp.op.doOperation(this.value, tmp.a);
+             stack1.push(this.stack.pop());
+        }
+        while (stack1.sizeOf() != 0) {
+            tmp = (Node)stack1.pop();
+            this.value = (tmp.op.doOperation(this.value, tmp.a));
         }
         return this.value;
     }
