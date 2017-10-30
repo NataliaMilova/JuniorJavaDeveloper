@@ -206,7 +206,7 @@ public class LinkedList implements List, Stack, Queue, Cloneable {
         if (object == null){
             return false;
         }
-        if (object.getClass() != this.getClass())
+        if (!object.getClass().equals(this.getClass()))
             return false;
 
         if (this.size != ((LinkedList)object).size)

@@ -12,11 +12,11 @@ public final class Utils {
     private Utils(){
     }
 
-    interface Predicate2{
+    public interface Predicate2{
         boolean rule(Object o1, Object o2);
     }
 
-    public interface Predicate {
+    public interface Predicate{
         boolean apply(Object object);
     }
 
