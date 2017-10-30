@@ -1,11 +1,19 @@
 package objects4.utils;
-import objects4.arraylist.*;
+
+import objects5.arraylist.arraylist.*;
+
+import java.util.Iterator;
+
 /**
  * Created by evami on 26.10.17.
  */
 public final class Utils {
 
     private Utils(){
+    }
+
+    interface Predicate2{
+        boolean rule(Object o1, Object o2);
     }
 
     public interface Predicate {
@@ -42,24 +50,63 @@ public final class Utils {
         return tmp;
     }
 
-    public static void main(String[] args) {
+    public static List toList(Object[] arr){
         List list = new LinkedList();
-        Object o = Utils.find(new Predicate(){
-            public boolean apply(Object o) {
-                return "a".equals(o);
-            }
-        }, list);
+        if (arr == null)
+            return null;
+        for (int i = 0; i < arr.length; ++i){
+            list.add(arr[i]);
+        }
+        return list;
+    }
 
-        List result = Utils.filter(new Predicate(){
-            public boolean apply(Object object) {
-                return (object.toString().length() == 1);
+    public static List intersect (List list1, List list2, Predicate2 pred){
+        List result = new LinkedList();
+        Object tmp1, tmp2;
+        if (pred == null)
+            pred = new Predicate2() {
+                @Override
+                public boolean rule(Object o1, Object o2) {
+                    return o1.equals(o2);
+                }
+            };
+        Iterator it1 = list1.iterator();
+        while (it1.hasNext()){
+            tmp1 = it1.next();
+            Iterator it2 = list2.iterator();
+            while (it2.hasNext()){
+                tmp2 = it2.next();
+                if (pred.rule(tmp1, tmp2)){
+                    result.add(tmp1);
+                    break;
+                }
             }
-        }, list);
+        }
+        return result;
+    }
 
-        List result2 = Utils.transform(new Transformer(){
-            public Object trans(Object object) {
-                return object.toString() + object.toString();
+    public static List difference (List list1, List list2, Predicate2 pred){
+        List result = new LinkedList();
+        Object tmp1;
+        int tmp2 = 0;
+        if (pred == null)
+            pred = new Predicate2() {
+                @Override
+                public boolean rule(Object o1, Object o2) {
+                    return o1.equals(o2);
+                }
+            };
+        Iterator it1 = list1.iterator();
+        while (it1.hasNext()){
+            tmp1 = it1.next();
+            Iterator it2 = list2.iterator();
+            while (it2.hasNext()){
+                if (!pred.rule(tmp1, it2.next()))
+                    tmp2++;
             }
-        }, list);
+            if (tmp2 == list2.sizeOf())
+                result.add(tmp1);
+        }
+        return result;
     }
 }
