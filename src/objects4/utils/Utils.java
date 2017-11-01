@@ -109,4 +109,36 @@ public final class Utils {
         }
         return result;
     }
+
+    public static Iterable view(Iterable it1, Iterable... it2){
+        Iterator[] iters = new Iterator[it2.length + 1];
+        iters[0] = it1.iterator();
+        for (int i = 0; i < iters.length - 1; ++i){
+            iters[i + 1] = it2[i].iterator();
+        }
+        return new Iterable() {
+            @Override
+            public Iterator iterator() {
+                return new ViewIterator(iters);
+            }
+        };
+    }
+
+    public static Iterable filterView(Iterable it1, Predicate pred){
+        return new Iterable() {
+            @Override
+            public Iterator iterator() {
+                return new FilterViewIterator(it1.iterator(), pred);
+            }
+        };
+    }
+
+    public static Iterable transformView(Iterable it, Transformer trans){
+        return new Iterable() {
+            @Override
+            public Iterator iterator() {
+                return new TransformViewIterator(it.iterator(), trans);
+            }
+        };
+    }
 }

@@ -44,7 +44,7 @@ public class ArrayList implements List, Stack, Queue {
     }
 
     @Override
-    public ArrayList clone(){
+    public ArrayList clone() {
         return new ArrayList(this.objects, this.size);
     }
 

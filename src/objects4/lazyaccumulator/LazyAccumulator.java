@@ -53,6 +53,7 @@ public class LazyAccumulator {
                 return a - b;
             }
         });
-        System.out.println(acc.calculate());
+        int result = acc.calculate();
+        System.out.println(result);
     }
 }

@@ -41,7 +41,7 @@ public class MainFiles {
             System.out.println(i);
         }
 
-        File findFile = (File)Utils.find(new Utils.Predicate() {
+        File findFile = (File) Utils.find(new Utils.Predicate() {
             @Override
             public boolean apply(Object object) {
                 return ((File)object).getName().equals("tasks1.odt");

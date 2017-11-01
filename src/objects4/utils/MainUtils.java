@@ -3,6 +3,8 @@ package objects4.utils;
 import objects5.arraylist.arraylist.LinkedList;
 import objects5.arraylist.arraylist.List;
 
+import java.util.Iterator;
+
 /**
  * Created by evami on 29.10.17.
  */
