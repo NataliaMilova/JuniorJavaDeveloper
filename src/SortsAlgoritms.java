@@ -1,12 +1,12 @@
 import java.util.Arrays;
 
+import java.util.IdentityHashMap;
 /**
  * Created by evami on 29.10.17.
  */
 public final class SortsAlgoritms {
 
     private SortsAlgoritms(){
-
     }
 
     // аналогично перемещению игроком карт на руках. Сложность O(n^2)
@@ -45,11 +45,21 @@ public final class SortsAlgoritms {
     }
 
     public static void main(String[] args) {
-        Comparable [] arr1 = {1, -80, 4, 2};
+       /* Comparable [] arr1 = {1, -80, 4, 2};
         Comparable [] arr2 = {1, -80, 4, 2};
         insertionSort(arr1);
         System.out.println(Arrays.toString(arr1));
         selectionSort(arr2);
-        System.out.println(Arrays.toString(arr2));
+        System.out.println(Arrays.toString(arr2));*/
+
+        /*String a = "a";
+        String b = a;
+        String c = new String("a");*/
+        char test  = '5';
+        char test1 = '\u0040';
+        char test2 = 500;
+        System.out.println(test);
+        System.out.println(test1);
+        System.out.println(test2);
     }
 }

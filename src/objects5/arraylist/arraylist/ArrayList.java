@@ -93,7 +93,7 @@ public class ArrayList implements List, Stack, Queue {
     public Object remove(int index){
         Object tmp = this.objects[index];
         this.objects[index] = null;
-        System.arraycopy(this.objects, index + 1, this.objects,index, this.size - index);
+        System.arraycopy(this.objects, index + 1, this.objects,index, this.size - index - 1);
         this.size--;
         return tmp;
     }

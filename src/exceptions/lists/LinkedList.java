@@ -1,45 +1,47 @@
-package objects5.arraylist.arraylist;
+package exceptions.lists;
 
-
+import java.util.ConcurrentModificationException;
 import java.util.Iterator;
 
 /**
  * Created by evami on 23.10.17.
  */
-public class LinkedList implements List, Stack, Queue{
-    private ListItem head;
+public class LinkedList<T> implements List<T>, Stack<T>, Queue<T> {
+    private ListItem<T> head;
     private int size;
+    private int modCount;
 
-    private LinkedList(ListItem head, int size){
-        this.head = new ListItem(head);
+    private LinkedList(ListItem<T> head, int size){
+        this.head = new ListItem<>(head);
         this.size = size;
     }
 
     public LinkedList(){
     }
 
-    public LinkedList(Object value){
-        this.head = new ListItem(value);
+    public LinkedList(T value){
+        this.head = new ListItem<>(value);
         this.size++;
+        this.modCount++;
     }
 
-    public static class ListItem {
-        public final Object value;
-        public ListItem next;
+    public static class ListItem<T> {
+        private T value;
+        private ListItem<T> next;
 
-        public ListItem(Object value){
+        public ListItem(T value){
             this.value = value;
         }
 
-        public ListItem(Object value, ListItem item){
+        public ListItem(T value, ListItem<T> item){
             this.value = value;
             this.next = item;
         }
 
-        private ListItem(ListItem obj){
+        protected ListItem(ListItem<T> obj){
             this.value = obj.value;
             if (obj.next != null)
-                this.next = new ListItem(obj.next);
+                this.next = new ListItem<>(obj.next);
         }
 
         @Override
@@ -61,11 +63,13 @@ public class LinkedList implements List, Stack, Queue{
         }
     }
 
-    private class ListIterator implements Iterator{
-        private ListItem ptr;
+    private class ListIterator<T> implements Iterator<T>{
+        private ListItem<T> ptr;
+        private int modCount;
 
-        public ListIterator(){
-            this.ptr = LinkedList.this.head;
+        public ListIterator(ListItem<T> head){
+            this.ptr = head;
+            this.modCount = LinkedList.this.modCount;
         }
 
         @Override
@@ -74,59 +78,61 @@ public class LinkedList implements List, Stack, Queue{
         }
 
         @Override
-        public Object next(){
-            Object tmp = this.ptr.value;
+        public T next(){
+            if (LinkedList.this.modCount != this.modCount)
+                throw new ConcurrentModificationException();
+            T tmp = this.ptr.value;
             this.ptr = this.ptr.next;
             return tmp;
         }
     }
 
     @Override
-    public LinkedList clone(){
-        return new LinkedList(this.head, this.size);
+    public LinkedList<T> clone(){
+        return new LinkedList<>(this.head, this.size);
     }
 
     @Override
-    public Iterator iterator(){
-        return new ListIterator();
+    public Iterator<T> iterator(){
+        return new ListIterator(this.head);
     }
 
     @Override
-    public void add(Object value, int index){
+    public void add(T object, int index){
         if (this.size == 0){
-            this.head = new ListItem(value);
+            this.head = new ListItem<>(object);
             this.size++;
+            this.modCount++;
         }
         else
         if ((index < 0) || (index > this.size))
             System.out.println("Index error");
         else {
             if (index == 0) {
-                this.head = new ListItem(value, this.head);
-                this.size++;
+                this.head = new ListItem<>(object, this.head);
             }
             else {
                 ListItem tmp = this.head;
                 for (int i = 0; i < index - 1; ++i){
                     tmp = tmp.next;
                 }
-                tmp.next = new ListItem(value, tmp.next);
-                this.size++;
+                tmp.next = new ListItem<>(object, tmp.next);
             }
+            this.modCount++;
+            this.size++;
         }
     }
 
     @Override
-    public void add(Object object){
+    public void add(T object){
         this.add(object, this.size);
     }
 
     @Override
-    public Object getValue(int index){
-        ListItem tmp;
+    public T getValue(int index){
+        ListItem<T> tmp;
         if ((index >= this.size) || (index < 0)){
-            System.out.println("Index error");
-            return -1;
+            throw new ListExceptions("LinkedList has not element in index: " + index);
         }
         tmp = this.head;
         for (int i = 0; i < index; ++i){
@@ -136,8 +142,8 @@ public class LinkedList implements List, Stack, Queue{
     }
 
     @Override
-    public Object remove(int index){
-        ListItem tmp, tmp2;
+    public T remove(int index){
+        ListItem<T> tmp, tmp2;
         if (this.size == 0){
             System.out.println("List is empty");
             return null;
@@ -169,6 +175,7 @@ public class LinkedList implements List, Stack, Queue{
         tmp2 = tmp.next;
         tmp.next = tmp.next.next;
         this.size--;
+        this.modCount++;
         return tmp2.value;
     }
 
@@ -178,49 +185,34 @@ public class LinkedList implements List, Stack, Queue{
     }
 
     @Override
-    public void push(Object object){
+    public void push(T object){
         this.add(object, 0);
     }
 
     @Override
-    public Object pop(){
+    public T pop(){
         return remove(0);
     }
 
     @Override
-    public Object peek(){
+    public T peek(){
         return getValue(0);
     }
 
     @Override
-    public Object poll(){
+    public T poll(){
         return remove(0);
     }
 
     @Override
     public boolean equals(Object object) {
-        int size = 0;
-        boolean success;
-        if (this == object)
-            return true;
-        if (object == null){
-            return false;
-        }
-        if (!object.getClass().equals(this.getClass()))
-            return false;
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
 
-        if (this.size != ((LinkedList)object).size)
-            return false;
+        LinkedList<?> that = (LinkedList<?>) object;
 
-        Iterator it1 = this.iterator();
-        Iterator it2 = ((LinkedList)object).iterator();
-
-        while (it1.hasNext() && it2.hasNext()){
-            success = it1.next().equals(it2.hasNext());
-            if (!success)
-                return false;
-        }
-        return true;
+        if (size != that.size) return false;
+        return head != null ? head.equals(that.head) : that.head == null;
     }
 
     @Override
@@ -229,4 +221,5 @@ public class LinkedList implements List, Stack, Queue{
         result = 31 * result + size;
         return result;
     }
+
 }
