@@ -9,22 +9,19 @@ import java.util.concurrent.*;
  */
 public class Main {
 
-    private static List<Future<TxResult>> results = new ArrayList<>();
     private static final BlockingDeque<Transaction> mailerTasksDeque = new LinkedBlockingDeque();
 
     public static void main(String[] args) {
         Random rnd = new Random();
         Bank bank = new Bank();
-        Thread mailer = new Mailer();
-        mailer.start();
+        ExecutorService poolMailers = Executors.newFixedThreadPool(10);
         ExecutorService poolTasks = Executors.newFixedThreadPool(4);
-        ExecutorService poolMailerTasks = Executors.newFixedThreadPool(4);
         for (int i = 0; i < 100; i++)
             bank.addUser(new Bank.User("User " + i));
         for (int i = 0; i < 100; i++)
             bank.addAccount(new Bank.Account(i + 1000, rnd.nextInt(bank.getUsers().size())));
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < 20; i++) {
              poolTasks.submit(new Runnable() {
                 @Override
                 public void run() {
@@ -42,32 +39,28 @@ public class Main {
                 }
             });
         }
-
+        poolTasks.shutdown();
     }
 
     private static class Mailer extends Thread {
         @Override
-        public void run() {
-            while (!isInterrupted()) {
+        public void run() {{
                 try {
-                    Transaction trans = mailerTasksDeque.take();
+                    Transaction trans = mailerTasksDeque.takeFirst();
+                    System.out.println();
                     if (trans.result == TxResult.SUCCESS){
-                        String message = "Списание с " + trans.src.getId() + " на сумму" + trans.ammount + "\n"
+                        String message = "Списание с " + trans.src.getId() + " на сумму " + trans.amount + "\n"
                                 + "Баланс = " + trans.src.getBalance() + "\n"
-                                + "Зачисление на " + trans.dest.getId() + " " + trans.ammount;
+                                + "Зачисление на " + trans.dest.getId() + " " + trans.amount;
                         System.out.println(message);
-                        return;
                     }
-                    if (trans.result == TxResult.NOT_ENOUGH){
-                        System.out.println("Недостаточно средств на " + trans.src.getId() + "" + trans.src.getUserId());
-                        return;
+                    else if (trans.result == TxResult.NOT_ENOUGH){
+                        System.out.println("Недостаточно средств на " + trans.src.getId());
                     }
-                    if (trans.result == TxResult.SAME_ACCOUNT){
+                    else if (trans.result == TxResult.SAME_ACCOUNT){
                         System.out.println("Перевод на тот же аккаунт невозможен " + trans.src.getId() + " " + trans.dest.getId());
-                        return;
                     }
                 } catch (InterruptedException e) {
-                    interrupt();
                     e.printStackTrace();
                 }
             }
@@ -78,13 +71,13 @@ public class Main {
         private Bank.Account src;
         private Bank.Account dest;
         private TxResult result;
-        private int ammount;
+        private int amount;
 
-        public Transaction(Bank.Account src, Bank.Account dest, int ammount, TxResult result) {
+        public Transaction(Bank.Account src, Bank.Account dest, int amount, TxResult result) {
             this.src = src;
             this.dest = dest;
             this.result = result;
-            this.ammount = ammount;
+            this.amount = amount;
         }
     }
 }

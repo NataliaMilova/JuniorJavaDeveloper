@@ -6,8 +6,8 @@ import java.util.*;
  * Created by evami on 11.12.17.
  */
 public class Bank {
-    private static int accountId;
-    private static int userId;
+    private static int accountId = 0;
+    private static int userId = 0;
     private HashMap<Integer, User> users = new HashMap<>();
     private HashMap<Integer, Account> accounts = new HashMap<>();
 
