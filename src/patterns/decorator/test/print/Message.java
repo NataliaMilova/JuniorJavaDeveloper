@@ -1,4 +1,4 @@
-package print;
+package patterns.decorator.test.print;
 
 import java.io.Serializable;
 

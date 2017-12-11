@@ -1,10 +1,7 @@
 package streams1;
 
-import com.sun.xml.internal.bind.v2.runtime.output.Encoded;
-
 import java.io.*;
-import java.nio.charset.Charset;
-import java.util.Arrays;
+
 
 /**
  * Created by evami on 15.11.17.
@@ -14,8 +11,13 @@ public class StreamTasksCrypt {
     public static void cryptFile(File text, File result, File password) throws IOException{
         byte[] buf = new byte[1024];
         int len;
-        try (CryptFileInputStream src = new CryptFileInputStream(text, password);
-             OutputStream dest = new FileOutputStream(result)){
+        try (ObjectInputStream src = new ObjectInputStream(
+                new CryptFileInputStream(
+                        new FileInputStream(text), password
+                )
+        );
+             OutputStream dest = new FileOutputStream(result))
+        {
             while ((len = src.read(buf)) > 0) {
                 dest.write(buf, 0, len);
             }
@@ -50,8 +52,8 @@ public class StreamTasksCrypt {
         String password = "hello";
 
 
-        cryptPass(src, cryptSrc, password);
-        cryptPass(cryptSrcFile, cryptResult, password);
+        //cryptPass(src, cryptSrc, password);
+        //cryptPass(cryptSrcFile, cryptResult, password);
 
 
         cryptFile(srcFile, cryptSrcFile, pass);

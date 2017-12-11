@@ -1,16 +1,20 @@
-package print;
+package streams2.print2;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Created by xmitya on 28.08.16.
  */
 public class PrintServer {
 
+    private HashMap<String, String> users = new HashMap<>();
     private int port;
 
     private SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss.SSS");
@@ -24,7 +28,9 @@ public class PrintServer {
             System.out.println("Server started on " + ssocket);
 
             while (true) {
+
                 Socket sock = ssocket.accept();
+                sock.setTcpNoDelay(true);
 
                 try {
                     process(sock);
@@ -45,10 +51,32 @@ public class PrintServer {
         String host = sock.getInetAddress().getHostAddress();
 
         try (ObjectInputStream objIn = new ObjectInputStream(sock.getInputStream());
-             OutputStream out = sock.getOutputStream()) {
+             ObjectOutputStream objOut = new ObjectOutputStream(sock.getOutputStream())) {
+
             Object obj = objIn.readObject();
 
-            printMessage((Message) obj, host);
+            if (obj instanceof Message){
+                printMessage((Message) obj, host);
+                this.users.putIfAbsent(host, ((Message) obj).getSender());
+            }
+            else{
+                Command command = new Command();
+                command.readExternal(objIn);
+                this.users.putIfAbsent(host, command.getSender());
+                switch (command.getName()){
+                    case "/ping":
+                        pingCommand(objIn, objOut, sock);
+                        break;
+                    case "/list_users":
+                        objOut.writeObject(this.users);
+                        objOut.flush();
+                        break;
+                    case "/server_time":
+                        objOut.writeLong(System.currentTimeMillis());
+                        objOut.flush();
+                        break;
+                }
+            }
         }
         catch (IOException | ClassNotFoundException | RuntimeException e) {
             System.err.println("Failed process connection from: " + host);
@@ -56,6 +84,18 @@ public class PrintServer {
             e.printStackTrace();
 
             throw e;
+        }
+    }
+
+    private void pingCommand(ObjectInputStream objIn, ObjectOutputStream objOut, Socket sock) throws IOException {
+        int read;
+
+        byte[] buf = new byte[1024];
+
+        for (int i = 0; i < 1000; ++i){
+            read = objIn.read();
+            objOut.write(read);
+            objOut.flush();
         }
     }
 

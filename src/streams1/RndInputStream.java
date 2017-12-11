@@ -13,7 +13,7 @@ public class RndInputStream extends InputStream {
 
     @Override
     public int read() throws IOException {
-        return this.rnd.nextInt(256);
+        return this.rnd.nextInt(257);
     }
 
     @Override
@@ -22,4 +22,7 @@ public class RndInputStream extends InputStream {
             b[i] = (byte)read();
         return b.length;
     }
+
+
+
 }

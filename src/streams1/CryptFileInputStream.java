@@ -2,22 +2,22 @@ package streams1;
 
 import java.io.*;
 
+
 /**
  * Created by evami on 15.11.17.
  */
-public class CryptFileInputStream extends InputStream{
+public class CryptFileInputStream extends FilterInputStream{
 
-    private InputStream src;
     private CycleInputStream pass;
 
-    public CryptFileInputStream(File src, File pass) throws FileNotFoundException {
-        this.src = new FileInputStream(src);
+    public CryptFileInputStream(InputStream src, File pass) throws FileNotFoundException {
+        super(src);
         this.pass = new CycleInputStream(pass);
     }
 
     @Override
     public int read() throws IOException {
-        int tmp = src.read();
+        int tmp = super.read();
         int tmp2 = pass.read();
         if (tmp != -1)
             return tmp ^ tmp2;
@@ -26,9 +26,12 @@ public class CryptFileInputStream extends InputStream{
 
     @Override
     public int read(byte b[], int off, int len) throws IOException {
+        if ((off | len | (b.length - (len + off)) | (off + len)) < 0)
+            throw new IndexOutOfBoundsException();
+
         int tmp;
         for (int i = off; i < b.length; ++i){
-            tmp = this.read();
+            tmp = read();
             if (tmp == -1)
                 return i;
             b[i] = (byte)tmp;

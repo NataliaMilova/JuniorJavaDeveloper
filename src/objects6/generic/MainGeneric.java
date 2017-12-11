@@ -1,9 +1,9 @@
 package objects6.generic;
 
 /**
- * Created by evami on 02.11.17.
+ * Created by evami on 16.11.17.
  */
-public class Main {
+public class MainGeneric {
     public static void main(String[] args) {
         List<Integer> list = new LinkedList<>();
         //list.add("test"); error

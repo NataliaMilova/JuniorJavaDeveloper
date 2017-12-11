@@ -1,4 +1,6 @@
-package print;
+package patterns.decorator.test.print;
+
+import patterns.decorator.test.CryptFileOutputStream;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -81,8 +83,7 @@ public class PrintClient {
         try (Socket sock = new Socket()) {
             sock.connect(serverAddr);
 
-            try (OutputStream out = sock.getOutputStream()) {
-                ObjectOutputStream objOut = new ObjectOutputStream(out);
+            try  (ObjectOutputStream objOut = new ObjectOutputStream(new CryptFileOutputStream(sock.getOutputStream(), (byte)104))){
 
                 objOut.writeObject(msg);
 
