@@ -15,12 +15,12 @@ public class Main {
         Mailer mailer = new Mailer();
         mailer.start();
         ExecutorService poolTasks = Executors.newFixedThreadPool(4);
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 10; i++)
             bank.addUser(new Bank.User("User " + i));
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 20; i++)
             bank.addAccount(new Bank.Account(i + 1000, rnd.nextInt(bank.getUsers().size())));
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 100; i++) {
              poolTasks.submit(new Runnable() {
                 @Override
                 public void run() {
@@ -43,10 +43,12 @@ public class Main {
     private static class Mailer extends Thread {
         @Override
         public void run() {
+            int count = 0;
                 while (!isInterrupted()) {
                     try {
                         Transaction trans = mailerTasksDeque.takeFirst();
                         System.out.println();
+                        System.out.println(++count);
                         if (trans.result == TxResult.SUCCESS) {
                             String message = "Списание с " + trans.src.getId() + " на сумму " + trans.amount + "\n"
                                     + "Баланс = " + trans.src.getBalance() + "\n"
