@@ -68,7 +68,21 @@ public class Bank {
             if (src.balance < amount)
                 return TxResult.NOT_ENOUGH;
             else{
-                transaction(src, dest, amount);
+                if (src.id < dest.id)
+                    synchronized (src){
+                        synchronized (dest){
+                            src.balance -= amount;
+                            dest.balance += amount;
+                        }
+                    }
+                else
+                    synchronized (dest){
+                        synchronized (src){
+                            src.balance -= amount;
+                            dest.balance += amount;
+                        }
+                    }
+                //transaction(src, dest, amount);
                 return TxResult.SUCCESS;
             }
 
