@@ -20,7 +20,7 @@ public class Main {
         for (int i = 0; i < 2; i++)
             bank.addAccount(new Bank.Account(i + 1000, rnd.nextInt(bank.getUsers().size())));
 
-        for (int i = 0; i < 5000; i++) {
+        for (int i = 0; i < 10000; i++) {
              poolTasks.submit(new Runnable() {
                 @Override
                 public void run() {

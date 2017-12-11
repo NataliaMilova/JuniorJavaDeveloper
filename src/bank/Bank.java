@@ -61,17 +61,22 @@ public class Bank {
         }
     }
 
-    public synchronized TxResult transferMoney(Account src, Account dest, int amount){
+    public TxResult transferMoney(Account src, Account dest, int amount){
         if (src.id == dest.id)
             return TxResult.SAME_ACCOUNT;
         else
             if (src.balance < amount)
                 return TxResult.NOT_ENOUGH;
             else{
-                src.balance -= amount;
-                dest.balance += amount;
+                transaction(src, dest, amount);
                 return TxResult.SUCCESS;
             }
+
+    }
+
+    private synchronized void transaction (Account src, Account dest, int amount){
+        src.balance -= amount;
+        dest.balance += amount;
     }
 
     public void addUser (User user){
