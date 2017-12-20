@@ -88,10 +88,10 @@ public class Bank {
 
     }
 
-    private synchronized void transaction (Account src, Account dest, int amount){
+    /*private synchronized void transaction (Account src, Account dest, int amount){
         src.balance -= amount;
         dest.balance += amount;
-    }
+    }*/
 
     public void addUser (User user){
         users.put(user.id, user);
