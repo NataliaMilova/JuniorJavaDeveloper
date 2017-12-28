@@ -1,7 +1,9 @@
 package nio.chat;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -10,8 +12,12 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.concurrent.BlockingDeque;
+import java.util.concurrent.LinkedBlockingDeque;
 
 public class NioClient {
+
+    private BlockingDeque<String> messageQueue = new LinkedBlockingDeque<>();
 
     public static void main(String[] args) {
         NioClient server = new NioClient();
@@ -20,7 +26,7 @@ public class NioClient {
     }
 
     public void start() {
-
+        new Thread(new Sender()).start();
         new Thread(new NioClient.NioWorker()).start();
     }
 
@@ -30,7 +36,6 @@ public class NioClient {
         private SocketChannel clientCh;
         private Selector sel;
         private ByteBuffer buf;
-        private Scanner scanner = new Scanner(System.in);
 
         @Override
         protected void init() throws Exception {
@@ -45,7 +50,9 @@ public class NioClient {
 
         @Override
         protected void loop() throws Exception {
-            sel.select();
+            sel.select(50);
+            if (!messageQueue.isEmpty())
+                clientCh.register(sel, SelectionKey.OP_WRITE);
             Set<SelectionKey> keys = sel.selectedKeys();
             Iterator<SelectionKey> iter = keys.iterator();
 
@@ -81,15 +88,11 @@ public class NioClient {
             }
             buf.flip();
             System.out.println(new String(buf.array(), 0, buf.limit(), Charset.forName("utf-8")));
-            key.interestOps(SelectionKey.OP_WRITE);
         }
 
-        private void doWrite(SelectionKey key) throws IOException {
-            String msg = scanner.nextLine();
-            msg += "\n";
+        private void doWrite(SelectionKey key) throws IOException, InterruptedException {
             SocketChannel channel = (SocketChannel) key.channel();
-            channel.write(ByteBuffer.wrap(msg.getBytes()));
-
+            channel.write(ByteBuffer.wrap(messageQueue.takeFirst().getBytes()));
             key.interestOps(SelectionKey.OP_READ);
         }
 
@@ -99,7 +102,23 @@ public class NioClient {
                 channel.finishConnect();
             }
             channel.configureBlocking(false);
-            channel.register(sel, SelectionKey.OP_WRITE);
+            key.interestOps(SelectionKey.OP_READ);
+        }
+    }
+
+    private class Sender extends Worker {
+        private Scanner scanner;
+
+        @Override
+        protected void loop(){
+            String msg = scanner.nextLine();
+
+            NioClient.this.messageQueue.add(msg);
+        }
+
+        @Override
+        protected void init(){
+            scanner = new Scanner(System.in);
         }
     }
 }
